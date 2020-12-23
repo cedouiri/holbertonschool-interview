@@ -1,3 +1,4 @@
+#include <limits.h>
 #include "binary_trees.h"
 
 /**
@@ -8,90 +9,64 @@
  * @value: is a double pointer to the root node of the Heap
  * Return: a pointer to the new node, or NULL on failure
  */
+
 heap_t *heap_insert(heap_t **root, int value)
 {
-	binary_tree_t *test;
-	test = insert_into_first_place(root, value);
-	return test;
-}
+	heap_t *insert = NULL;
+	heap_t *new = NULL;
+	int temp;
 
-
-binary_tree_t *insert_into_first_place(heap_t **root, int value) {
-	binary_tree_t *nn, *temp;
-	temp = *root;
-	if (temp)
-	printf("%d", temp->n);
-	if (temp == NULL)
+	if (!root)
+		return (NULL);
+	if (!*root)
 	{
-		nn = binary_tree_node(NULL, value);
-		*root = nn;
-		return nn;
+		*root = binary_tree_node(NULL, value);
+		return (*root);
 	}
-	else if (temp->left == NULL) 
-    {
-		nn = binary_tree_insert_left(temp, value);
-		return nn;
-	} 
-	else if (temp->right == NULL) 
+	insert = first_empty(*root);
+	new = binary_tree_node(insert, value);
+	if (!insert->left)
+		insert->left = new;
+	else
+		insert->right = new;
+	while (new->parent && new->n > (new->parent)->n)
 	{
-		nn = binary_tree_insert_right(temp, value);
-		return nn;
+		temp = (new->parent)->n;
+		(new->parent)->n = new->n;
+		new->n = temp;
+		new = new->parent;
 	}
-    else
-    { 
-        insert_into_first_place(&temp->left, value); 
-        insert_into_first_place(&temp->right, value); 
-    }
-	return NULL;
-}
-
-
-/**
-* binary_tree_insert_left - Entry point
-*
-*
-* @parent : The parent.
-* @value : The value of the node.
-* Return: Always 0 (Success)
-*/
-binary_tree_t *binary_tree_insert_left(binary_tree_t *parent, int value)
-{
-binary_tree_t *new;
-if (!parent)
-return (NULL);
-new = malloc(sizeof(binary_tree_t));
-if (!new)
-return (NULL);
-new->n = value;
-new->parent = parent;
-new->left = parent->left;
-new->right = NULL;
-parent->left = new;
-if (new->left)
-new->left->parent = new;
-return (new);
+	return (new);
 }
 
 /**
-* binary_tree_insert_right - Entry point
-* @parent : The parent.
-* @value : The value of the node.
-* Return: Always 0 (Success)
-*/
-binary_tree_t *binary_tree_insert_right(binary_tree_t *parent, int value)
+ * first_empty - finds first parent with an empty child in a heap
+ *
+ *
+ * @root: pointer to the root of heap
+ * Return: pointer to empty parent or NULL
+ */
+
+heap_t *first_empty(heap_t *root)
 {
-binary_tree_t *new;
-if (!parent)
-return (NULL);
-new = malloc(sizeof(binary_tree_t));
-if (!new)
-return (NULL);
-new->n = value;
-new->parent = parent;
-new->right = parent->right;
-new->left = NULL;
-parent->right = new;
-if (new->right)
-new->right->parent = new;
-return (new);
+	heap_t *queue[100];
+	heap_t *strider = root;
+	int enter = 0, exit = 0;
+
+	while (strider && strider->left && strider->right)
+	{
+		queue[enter] = strider->left;
+		enter += 1;
+		if (enter >= 99)
+			enter = 0;
+		queue[enter] = strider->right;
+		enter += 1;
+		if (enter >= 99)
+			enter = 0;
+		strider = queue[exit];
+		exit += 1;
+		if (exit >= 99)
+			exit = 0;
+	}
+	return (strider);
 }
