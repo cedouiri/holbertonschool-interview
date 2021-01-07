@@ -5,6 +5,7 @@ a method that calculates the fewest number of operations needed
 to result in exactly n H characters in the file
 '''
 
+
 def minOperations(n):
     '''
     min operations
@@ -17,5 +18,3 @@ def minOperations(n):
             n = n // i
         i = i + 1
     return count
-
-
