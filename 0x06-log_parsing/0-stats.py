@@ -1,7 +1,7 @@
 #!/usr/bin/python3
-"""
-    Computes stdin input
-"""
+'''
+    a script that reads stdin line by line and computes metrics
+'''
 
 
 import sys
@@ -16,30 +16,28 @@ def codes(data):
 
 i = 0
 s = 0
-stat = {
-    '200': 0, '301': 0, '400': 0, '401': 0,
-    '403': 0, '404': 0, '405': 0, '500': 0
-}
+stat = ['200', '301', '400', '401', '403', '404', '405', '500']
+new = [0, 0, 0, 0, 0, 0, 0, 0]
 
 try:
     for line in sys.stdin:
-        i += 1
-        s += addFileSize(line)
-        code = codes(line)
-        if code in stat:
-            stat[code] += 1
+        c = line.split()
+        if len(c) > 2:
+            if c[-2] in stat:
+                x = stat.index(c[-2])
+                new[x] = new[x] + 1
+            i += 1
+            s = s + int(c[-1])
         if i == 10:
-            print("File size: {:d}".format(s))
-            for code, value in sorted(stat.items()):
-                if value > 0:
-                    print("{}: {:d}".format(code, value))
             i = 0
+            print("File size: {}".format(s))
+            for x in range(8):
+                if new[x] != 0:
+                    print('{}: {}'.format(stat[x], new[x]))
 except Exception:
     pass
-
 finally:
-    print("File size: {:d}".format(s))
-    for code, value in sorted(stat.items()):
-        if value > 0:
-            print("{}: {:d}".format(code, value))
-    i = 0
+    print("File size: {}".format(s))
+    for x in range(8):
+        if new[x] != 0:
+            print("{}: {}".format(stat[x], new[x]))
