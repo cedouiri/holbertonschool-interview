@@ -1,69 +1,70 @@
 #include "search_algos.h"
 
 /**
- * parray - Prints array of integers
- * @arr: a pointer that point to the first case
- * @start: The index of the first element to print in the array.
- * @end: the index of the last element to print in the array.
-*/
-void parray(int *arr, size_t start, size_t end)
-{
-	size_t i = start;
-
-	printf("Searching in arr: ");
-	while (i <= end)
-	{
-		printf("%d", arr[i]);
-		if (i != end)
-			printf(", ");
-		else
-			printf("\n");
-		i += 1;
-	}
-}
-
-/**
- * binary_search - Searches for a value in array
- * @arr: A pointer
- * @start: the first index
- * @end: the last index
- * @value: is the value to search for
- * Return: the index of the value
-*/
-int binary_search(int *arr, int start, int end, int value)
-{
-	int middle = (start + end) / 2;
-
-	if (end >= start)
-	{
-		if (arr[middle] == value && end == start)
-			return (middle);
-
-		parray(arr, start, end);
-
-		if (arr[middle] >= value)
-			return (binary_search(arr, start, middle, value));
-		else
-			return (binary_search(arr, middle + 1, end, value));
-	}
-	return (-1);
-}
-
-/**
- * advanced_binary -  searches for a value in a sorted array of integers
- * @array:  is a pointer to the first element of the array to search in
- * @size: is the value to search for
- * @value: the value to search for.
+ * parray - Prints an array
+ * @array: pointer to the first element of the array
+ * @min: min
+ * @max: max
  *
- * Return: the index of the value if it exists. otherwise -1.
-*/
+ *
+ * Return: No Return
+ */
+void parray(int *array, int min, int max)
+{
+	int i;
+
+	for (i = min; i < max; i++)
+		printf("%d, ", array[i]);
+
+	printf("%d\n", array[i]);
+}
+/**
+ * binary_search - searches for a value in array
+ * @array: pointer that point o the first element of arr
+ * @min: min
+ * @max: max
+ * @value: value to search for
+ *
+ * Return: Index where value is located or -1
+ */
+int binary_search(int *array, int min, int max, int value)
+{
+	int mid;
+
+	if (min > max)
+		return (-1);
+
+	printf("Searching in array: ");
+	parray(array, min, max);
+
+	if (min == max && array[max] == value)
+		return (max);
+
+	if (min == max && array[max] != value)
+		return (-1);
+
+	mid = min + (max - min) / 2;
+
+	if ((mid == min || value != array[mid - 1]) && array[mid] == value)
+		return (mid);
+
+	if (array[mid] >= value)
+		return (binary_search(array, min, mid, value));
+	return (binary_search(array, mid + 1, max, value));
+}
+/**
+ * advanced_binary - searches for a value in arr
+ * @array: pointer that point to the first element of arr
+ * @size: size of arr
+ * @value: value to search for
+ *
+ * Return: First index where value is located or -1
+ */
 int advanced_binary(int *array, size_t size, int value)
 {
-	int result, end;
 
-	if (!array)
+	if (!array || size == 0)
 		return (-1);
-	end = ((int)size) - 1;
-	result = binary_search(array, 0, end, value);
-	return (result);
+
+	return (binary_search(array, 0, size - 1, value));
 }
